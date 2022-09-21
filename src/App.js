@@ -1,76 +1,35 @@
 import logo from "./logo.svg";
 import "./App.css";
-import Button from "./Button";
-import styles from "./App.module.css";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
-  let [todo, setTodo] = useState("");
-  let [todos, setTodos] = useState([]);
-  const onChange = (e) => {
-    setTodo(e.target.value); //todo값을 setTodos에 넣었음
-  };
-
-  const onSubmit = (e) => {
-    e.preventDefault();
-    setTodos([todo, ...todos]);
-  };
+  const [loading, setLoading] = useState(true);
+  const [movies, setMovies] = useState([]);
+  useEffect(() => {
+    //fetch로 데이터를 요청할 서버
+    fetch(
+      "https://api.themoviedb.org/3/discover/movie?api_key=86fc153457462429d8ff36735a84752d&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=5&with_companies=disney&with_watch_monetization_types=flatrate"
+    )
+      .then((response) => response.json())
+      .then((json) => {
+        setMovies(json);
+        setLoading(false);
+      });
+  }, []); //API를 가져오는건 딱 한번만 할거기 때문에 useEffect 디펜던시에 아무것도 넣지않아서 한번만 실행되도록
+  //responce,json()메서드를 호출하면 json데이터를 js객체로 변환
+  //json의 값을 setMovies에 담아서 렌더링
 
   return (
-    <div>
-      <form action="#" onSubmit={onSubmit}>
-        <h1>My Todo</h1>
-        <input
-          value={todo}
-          onChange={onChange}
-          type="text"
-          placeholder="whats your todo?"
-        />
-        <button>입력</button>
-      </form>
+    <div className="App">
+      {loading ? <h1>Loading...</h1> : null}
       <ul>
-        {todos.map((i) => {
-          return <li>{i}</li>;
-        })}
+        {movies.map((data) => (
+          <li>{data.title}</li>
+        ))}{" "}
+        {/*데이터가 있는데... 안가져와지는듯? */}
       </ul>
     </div>
   );
-
-  // const [todo, setTodo] = useState("");
-  // const onChange = (e) => setTodo(e.target.value);
-  // //settodo에 변화가 생기면 그 변화값을 settodo에 저장해서 보여줌
-  // const [todos, setTodos] = useState([]);
-  // const onSubmit = (e) => {
-  //   e.preventDefault();
-  //   if (todo === "") {
-  //     return; //todo가 빈값이면 그냥 이 함수를 kill 아무것도 return하지 않음
-  //   }
-  //   setTodo("");
-  //   setTodos((currentArray) => [todo, ...currentArray]);
-  //   //state에 함수를 보낼 수 있음.
-  //   console.log(todos);
-  // };
-
-  // return (
-  //   <form action="#" onSubmit={onSubmit}>
-  //     <div>
-  //       <h1>My TODO({todos.length})</h1>
-  //       <input
-  //         value={todo} //input에 적히는 값=todo
-  //         onChange={onChange}
-  //         type="text"
-  //         placeholder="Write your to do.."
-  //       />
-  //       <button>입력</button>
-  //       <hr />
-  //       <ul>
-  //         {todos.map((item) => (
-  //           <li>{item}</li>
-  //         ))}
-  //       </ul>
-  //     </div>
-  //   </form>
-  // );
 }
 
 export default App;
