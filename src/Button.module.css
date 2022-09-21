@@ -1,0 +1,9 @@
+/*css파일을 작성하면 index.js 에서 import해줘야함
+=> 근데 이렇게되면 모든 styles가 일괄적으로 모든 파일에 적용되서 안됨.
+ 요소마다 속성을 지정해주는게 좋음 
+*/
+
+.btn{
+    color: wheat;
+    background-color: tomato;
+}
